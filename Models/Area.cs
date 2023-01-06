@@ -11,8 +11,8 @@ namespace MaderasProveedores.API.Models
         }
 
         public int Id { get; set; }
-        public string? Descripción { get; set; }
-        public bool? Activo { get; set; }
+        public string Descripcion { get; set; } = null!;
+        public bool Activo { get; set; }
 
         public virtual ICollection<Empleado> Empleados { get; set; }
     }

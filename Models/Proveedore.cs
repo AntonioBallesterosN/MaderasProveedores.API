@@ -11,10 +11,10 @@ namespace MaderasProveedores.API.Models
         }
 
         public int Id { get; set; }
-        public string? Proveedor { get; set; }
-        public long? Telefono { get; set; }
+        public string Proveedor { get; set; } = null!;
+        public long Telefono { get; set; }
         public string? Rfc { get; set; }
-        public bool? Activo { get; set; }
+        public bool Activo { get; set; }
 
         public virtual ICollection<Madera> Maderas { get; set; }
     }

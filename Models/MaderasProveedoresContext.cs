@@ -36,7 +36,7 @@ namespace MaderasProveedores.API.Models
             {
                 entity.ToTable("Area");
 
-                entity.Property(e => e.Descripción).HasMaxLength(50);
+                entity.Property(e => e.Descripcion).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Empleado>(entity =>
@@ -48,6 +48,7 @@ namespace MaderasProveedores.API.Models
                 entity.HasOne(d => d.IdAreaNavigation)
                     .WithMany(p => p.Empleados)
                     .HasForeignKey(d => d.IdArea)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Empleados_Area");
             });
 

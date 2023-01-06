@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MaderasProveedores.API.Models;
+using MaderasProveedores.Core;
+using MaderasProveedores.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,11 +13,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // lineas que necesita entity framework para establecer la conexiòn con la Db (paso 7)
-var connectionString = builder.Configuration.GetConnectionString("AppConnection");
-builder.Services.AddDbContext<MaderasProveedoresContext>(x => x.UseSqlServer(connectionString));
+
 //Paso 10 obtiene los ensamblados de los componentes para que podamos utilizarlos 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //
+builder.Services.AddCoreApplication();
+builder.Services.AddDataAccessApplication(builder.Configuration);
 
 var app = builder.Build();
 
