@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MaderasProveedores.API.DTO;
 using AutoMapper;
+using MaderasProveedores.Core.Interfaces;
+using MaderasProveedores.DataAccess.Dto;
 
 namespace MaderasProveedores.API.Controllers
 {
@@ -10,82 +12,57 @@ namespace MaderasProveedores.API.Controllers
     {
         //Inyeccion de dependecias 
 
-        private readonly MaderasProveedoresContext _maderasProveedoresContext;
+        //private readonly MaderasProveedoresContext _maderasProveedoresContext;
         private readonly IMapper _mapper;
+        private readonly IEmpleadosService _empleadosService;
 
-        public EmpleadosController(MaderasProveedoresContext maderasProveedoresContext, IMapper mapper)
+        public EmpleadosController(IMapper mapper, IEmpleadosService empleadosService)
         {
             // yo soy el constructor 
-            _maderasProveedoresContext = maderasProveedoresContext;
+            //_maderasProveedoresContext = maderasProveedoresContext;
             _mapper = mapper;
+            _empleadosService = empleadosService;
         }
 
-        [HttpGet("getAllEmpleados")]
-        public async Task<IActionResult> GetAllEmpleados()
-        {
-            var empleados = await _maderasProveedoresContext.Empleados.ToListAsync();
-            var listaMapeada = _mapper.Map<List<AddEmpleadoDto>>(empleados);
+        //[HttpGet("getAllEmpleados")]
+        //public async Task<IActionResult> GetAllEmpleados()
+        //{
+        //    var empleados = await _maderasProveedoresContext.Empleados.ToListAsync();
+        //    var listaMapeada = _mapper.Map<List<AddEmpleadoDto>>(empleados);
 
-            return Ok(listaMapeada);
-        }
+        //    return Ok(listaMapeada);
+        //}
 
         [HttpPost("addEmpleados")]
-        public async Task<IActionResult> AddEmpleados([FromBody] AddEmpleadoDto empleadoDto)
+        public async Task<IActionResult> AddEmpleados([FromBody] EmpleadosDto empleadoDto)
         {
-            if (string.IsNullOrWhiteSpace(empleadoDto.Nombre))
-            {
-                return BadRequest("Los campos nombre y apellido son obligatorios");
-            }
-
-            if (string.IsNullOrWhiteSpace(empleadoDto.Apellido))
-            {
-                return BadRequest("Los campos nombre y apellido son obligatorios");
-            }
-
-            //busca en area la id que se ingresa en empleado
-            var area = await _maderasProveedoresContext.Areas.FirstOrDefaultAsync(p => p.Id == empleadoDto.IdArea);
-
-            if (area is null)
-            {
-                return BadRequest("No existe el area");
-            }
-            
-            var newEmpleado = _mapper.Map<Empleado>(empleadoDto);
-
-            newEmpleado.Activo = true;
-
-            await _maderasProveedoresContext.Empleados.AddAsync(newEmpleado);
-            await _maderasProveedoresContext.SaveChangesAsync();
-
-            var empleados = await _maderasProveedoresContext.Empleados.AsNoTracking().ToListAsync();
-            var listaMapeada = _mapper.Map<List<AddEmpleadoDto>>(empleados);
-
-            return Ok(listaMapeada);
+            var response = await _empleadosService.AddEmpleados(empleadoDto);
+            return Ok(response);
         }
 
-        [HttpPut("updateEmpleados")]
-        public async Task<IActionResult> UpdateEmpleados(int id, AddEmpleadoDto empleadoDto)
-        {
-            var newEmpleado = _mapper.Map<Empleado>(empleadoDto);
-            newEmpleado.Id = id;
-            _maderasProveedoresContext.Empleados.Update(newEmpleado);
-            await _maderasProveedoresContext.SaveChangesAsync();
+        //[HttpPut("updateEmpleados")]
+        //public async Task<IActionResult> UpdateEmpleados(int id, AddEmpleadoDto empleadoDto)
+        //{
+        //    var newEmpleado = _mapper.Map<Empleado>(empleadoDto);
+        //    newEmpleado.Id = id;
+        //    _maderasProveedoresContext.Empleados.Update(newEmpleado);
+        //    await _maderasProveedoresContext.SaveChangesAsync();
 
-            var empleados = await _maderasProveedoresContext.Empleados.ToListAsync();
+        //    var empleados = await _maderasProveedoresContext.Empleados.ToListAsync();
 
-            return Ok(empleados);
-        }
+        //    return Ok(empleados);
+        //}
 
-        [HttpDelete("deleteEmpleados")]
-        public async Task<IActionResult> DeleteEmpleados(int id)
-        {
-            var idToDelete = new Empleado { Id = id };
-            _maderasProveedoresContext.Empleados.Remove(idToDelete);
-            await _maderasProveedoresContext.SaveChangesAsync();
+        //[HttpDelete("deleteEmpleados")]
+        //public async Task<IActionResult> DeleteEmpleados(int id)
+        //{
+        //    var idToDelete = new Empleado { Id = id };
+        //    _maderasProveedoresContext.Empleados.Remove(idToDelete);
+        //    await _maderasProveedoresContext.SaveChangesAsync();
 
-            var empleados = await _maderasProveedoresContext.Empleados.ToListAsync();
+        //    var empleados = await _maderasProveedoresContext.Empleados.ToListAsync();
 
-            return Ok(empleados);
-        }
+        //    return Ok(empleados);
+        //}
     }
 }
