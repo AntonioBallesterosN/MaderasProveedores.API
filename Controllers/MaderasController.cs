@@ -3,83 +3,61 @@ using MaderasProveedores.API.Models;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MaderasProveedores.API.DTO;
+using MaderasProveedores.Core.Interfaces;
+using MaderasProveedores.DataAccess.Dto;
 
 namespace MaderasProveedores.API.Controllers
 {
     public class MaderasController : Controller
     {
-        private readonly MaderasProveedoresContext _maderasProveedoresContext;
+        
         private readonly IMapper _mapper;
+        private readonly IMaderasService _maderasService;
 
-        public MaderasController(MaderasProveedoresContext maderasProveedoresContext, IMapper mapper)
+        public MaderasController(IMaderasService maderasService, IMapper mapper)
         {
-            _maderasProveedoresContext = maderasProveedoresContext;
+            _maderasService = maderasService;
             _mapper = mapper;
         }
 
         [HttpGet("getAllMaderas")]
         public async Task<IActionResult> GetAllMaderas()
         {
-            var maderas = await _maderasProveedoresContext.Maderas.ToListAsync();
-            var listaMapeada = _mapper.Map<List<AddMaderasDto>>(maderas);
+            var response = await _maderasService.GetAll();
 
-            return Ok(listaMapeada);
+            return Ok(response);
+        }
+
+        [HttpGet("getByIdMaderas")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var response = await _maderasService.GetById(id);
+
+            return Ok(response);    
         }
 
         [HttpPost("addMaderas")]
-        public async Task<IActionResult> AddMaderas([FromBody] AddMaderasDto maderaDto)
+        public async Task<IActionResult> AddMaderas([FromBody] MaderaDto maderaDto)
         {
-            if (string.IsNullOrWhiteSpace(maderaDto.Maderas))
-            { 
-                return BadRequest("Ingresa una madera"); 
-            }
+            var response = await _maderasService.AddMadera(maderaDto);
 
-            if(maderaDto.Cantidad <= 0 )
-            {
-                return BadRequest("Ingresa una cantidad");
-            }
-
-            var proveedor = await _maderasProveedoresContext.Proveedores.FirstOrDefaultAsync(p => p.Id == maderaDto.IdProveedores);
-
-            if (proveedor is null)
-            {
-                return BadRequest("Proveedor no existe");
-            }
-
-            var newMadera = _mapper.Map<Madera>(maderaDto);
-        
-            await _maderasProveedoresContext.Maderas.AddAsync(newMadera);
-            await _maderasProveedoresContext.SaveChangesAsync();
-
-            var maderas = await _maderasProveedoresContext.Maderas.AsNoTracking().ToListAsync();
-            var listaMapeada = _mapper.Map<List<AddMaderasDto>>(maderas);
-
-            return Ok(listaMapeada);
+            return Ok(response);
         }
 
         [HttpPut("updateMaderas")]
-        public async Task<IActionResult> UpdateMaderas(int id, AddMaderasDto maderaDto)
+        public async Task<IActionResult> UpdateMaderas(MaderaDto maderaDto)
         {
-            var newMadera = _mapper.Map<Madera>(maderaDto);
-            newMadera.Id = id;
-            _maderasProveedoresContext.Maderas.Update(newMadera);
-            await _maderasProveedoresContext.SaveChangesAsync();
+            var response = await _maderasService.Update(maderaDto);
 
-            var maderas = await _maderasProveedoresContext.Maderas.ToListAsync();
-
-            return Ok(maderas);
+            return Ok(response);
         }
 
         [HttpDelete("deleteMaderas")]
         public async Task<IActionResult> DeleteEmpleados(int id)
         {
-            var idToDelete = new Madera { Id = id };
-            _maderasProveedoresContext.Maderas.Remove(idToDelete);
-            await _maderasProveedoresContext.SaveChangesAsync();
+            await _maderasService.Delete(id);
 
-            var maderas = await _maderasProveedoresContext.Maderas.ToListAsync();
-
-            return Ok(maderas);
+            return Ok();
         }
     }
 }

@@ -4,6 +4,8 @@ using MaderasProveedores.API.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using MaderasProveedores.API.DTO;
+using MaderasProveedores.Core.Interfaces;
+using MaderasProveedores.DataAccess.Dto;
 
 namespace MaderasProveedores.API.Controllers
 {
@@ -11,79 +13,54 @@ namespace MaderasProveedores.API.Controllers
     {
         private readonly MaderasProveedoresContext _maderasProveedoresContext;
         private readonly IMapper _mapper;
+        private readonly IProveedoresService _proveedoresService;
 
 
-        public ProveedoreController(MaderasProveedoresContext maderasProveedoresContext, IMapper mapper)
+        public ProveedoreController(IProveedoresService proveedoresService, IMapper mapper)
         {
-            _maderasProveedoresContext = maderasProveedoresContext;
+            _proveedoresService = proveedoresService;
             _mapper = mapper;
         }
 
         [HttpGet("getAllProveedores")]
         public async Task<IActionResult> GetAllProvedorees()
         {
-            var provedores = await _maderasProveedoresContext.Proveedores.ToListAsync();
+            var response =await _proveedoresService.GetAll();
 
-            return Ok(provedores);
+            return Ok(response);
+        }
+
+        [HttpGet("getByIdProveedores")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var response =await _proveedoresService.GetById(id);
+            
+            return Ok(response);
         }
 
         [HttpPost("addProveddores")]
-        public async Task<IActionResult> AddProveedor(AddProveedorDto proveedorDto)
+        public async Task<IActionResult> AddProveedor(ProveedoresDto proveedoresDto)
         {
-            var newProveedor = _mapper.Map<Proveedore>(proveedorDto);
-           
-            if(!string.IsNullOrWhiteSpace(proveedorDto.Rfc))
-            {
-                if(proveedorDto.Rfc.Length != 13)
-                {
-                    return BadRequest("RFC debe contener 13 caracteres");
-                }
-            }
-            
-            if (string.IsNullOrWhiteSpace(proveedorDto.Proveedor))
-            {
-                return BadRequest("Ingresa un proveedor");
-            }
-           
-            var telefonoLength = newProveedor.Telefono.ToString().Length;
-           
-            if (telefonoLength > 10)
-            {
-                return BadRequest("Ingresa un numero menor a 10 digitos");
-            }
+            var response =await _proveedoresService.AddProveedor(proveedoresDto);
 
-            await _maderasProveedoresContext.Proveedores.AddAsync(newProveedor);
-            await _maderasProveedoresContext.SaveChangesAsync();
-
-            var proveedores = await _maderasProveedoresContext.Proveedores.ToListAsync();
-
-            return Ok(proveedores);
+            return Ok(response);
         }
 
         [HttpPut("updateProveedores")]
-        public async Task<IActionResult> UpdateProveedor(int id, AddProveedorDto proveedorDto)
+        public async Task<IActionResult> UpdateProveedor(ProveedoresDto proveedorDto)
         {
-            var newProveedor = _mapper.Map<Proveedore>(proveedorDto);
-            newProveedor.Id = id;
-            _maderasProveedoresContext.Proveedores.Update(newProveedor);
-            await _maderasProveedoresContext.SaveChangesAsync();
-
-            var proveedores = await _maderasProveedoresContext.Proveedores.ToListAsync();
-
-            return Ok(proveedores);
+            var response =await _proveedoresService.Update(proveedorDto);
+            
+            return Ok(response);
         }
 
         [HttpDelete("deleteProveedores")]
 
-        public async Task<IActionResult> RemoveProveedor(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var iDProveedorToDelete = new Proveedore { Id = id };
-            _maderasProveedoresContext.Proveedores.Remove(iDProveedorToDelete);
-            await _maderasProveedoresContext.SaveChangesAsync();
+            await _proveedoresService.Delete(id);
 
-            var proveedores = await _maderasProveedoresContext.Proveedores.ToListAsync();
-
-            return Ok(proveedores);
+            return Ok();
         }
 
     }

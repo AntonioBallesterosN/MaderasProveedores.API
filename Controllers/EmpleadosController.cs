@@ -24,14 +24,21 @@ namespace MaderasProveedores.API.Controllers
             _empleadosService = empleadosService;
         }
 
-        //[HttpGet("getAllEmpleados")]
-        //public async Task<IActionResult> GetAllEmpleados()
-        //{
-        //    var empleados = await _maderasProveedoresContext.Empleados.ToListAsync();
-        //    var listaMapeada = _mapper.Map<List<AddEmpleadoDto>>(empleados);
+        [HttpGet("getAllEmpleados")]
+        public async Task<IActionResult> GetAllEmpleados()
+        {
+            var response = await _empleadosService.GetAll();
 
-        //    return Ok(listaMapeada);
-        //}
+            return Ok(response);
+        }
+
+        [HttpGet("getByIdEmpleados")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var response = await _empleadosService.GetById(id);
+
+            return Ok(response);
+        }
 
         [HttpPost("addEmpleados")]
         public async Task<IActionResult> AddEmpleados([FromBody] EmpleadosDto empleadoDto)
@@ -40,29 +47,20 @@ namespace MaderasProveedores.API.Controllers
             return Ok(response);
         }
 
-        //[HttpPut("updateEmpleados")]
-        //public async Task<IActionResult> UpdateEmpleados(int id, AddEmpleadoDto empleadoDto)
-        //{
-        //    var newEmpleado = _mapper.Map<Empleado>(empleadoDto);
-        //    newEmpleado.Id = id;
-        //    _maderasProveedoresContext.Empleados.Update(newEmpleado);
-        //    await _maderasProveedoresContext.SaveChangesAsync();
+        [HttpPut("updateEmpleados")]
+        public async Task<IActionResult> UpdateEmpleados([FromBody] EmpleadosDto empleadoDto)
+        {
+            var response = await _empleadosService.Update(empleadoDto);
 
-        //    var empleados = await _maderasProveedoresContext.Empleados.ToListAsync();
+            return Ok(response);
+        }
 
-        //    return Ok(empleados);
-        //}
+        [HttpDelete("deleteEmpleados")]
+        public async Task<IActionResult> DeleteEmpleados(int id)
+        {
+            await _empleadosService.Delete(id);
 
-        //[HttpDelete("deleteEmpleados")]
-        //public async Task<IActionResult> DeleteEmpleados(int id)
-        //{
-        //    var idToDelete = new Empleado { Id = id };
-        //    _maderasProveedoresContext.Empleados.Remove(idToDelete);
-        //    await _maderasProveedoresContext.SaveChangesAsync();
-
-        //    var empleados = await _maderasProveedoresContext.Empleados.ToListAsync();
-
-        //    return Ok(empleados);
-        //}
+            return Ok();
+        }
     }
 }

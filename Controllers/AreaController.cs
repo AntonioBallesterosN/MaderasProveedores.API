@@ -21,14 +21,19 @@ namespace MaderasProveedores.API.Controllers
             _areaService = areaServices;
         }
 
-        //[HttpGet("getAllAreas")]
-        //public async Task<IActionResult> GetAllAreas()
-        //{
-        //    var areas = await _maderasProveedoresContext.Areas.ToListAsync();
-        //    //var listaMapeada = _mapper.Map<List<AddAreaDto>>(areas);
+        [HttpGet("getAllAreas")]
+        public async Task<IActionResult> GetAllAreas()
+        {
+            var response = await _areaService.GetAll();
+            return Ok(response);
+        }
 
-        //    return Ok(areas);
-        //}
+        [HttpGet("getByIdAreas")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var response = await _areaService.GetById(id);
+            return Ok(response);
+        }
 
         [HttpPost("addAreas")]
         public async Task<IActionResult> AddAreas([FromBody] AreaDto areaDto)
@@ -37,32 +42,19 @@ namespace MaderasProveedores.API.Controllers
             return Ok(response);
         }
 
-        //[HttpPut("updateAreas")]
-        //public async Task<IActionResult> UpdateAreas([FromBody] AddAreaDto areaDto)
-        //{
-        //    var newArea = _mapper.Map<Area>(areaDto);
-            
-        //    _maderasProveedoresContext.Areas.Update(newArea);
-        //    await _maderasProveedoresContext.SaveChangesAsync();
+        [HttpPut("updateAreas")]
+        public async Task<IActionResult> UpdateAreas([FromBody] AreaDto areaDto)
+        {
+            var response = await _areaService.UpdateArea(areaDto);
+            return Ok(response);
+        }
 
-        //    var areas = await _maderasProveedoresContext.Areas.ToListAsync();
+        [HttpDelete("deleteAreas")]
+        public async Task<IActionResult> DeleteEmpleados(int id)
+        {
+            await _areaService.Delete(id);
 
-        //    return Ok(areas);
-        //}
-
-        //[HttpDelete("deleteAreas")]
-        //public async Task<IActionResult> DeleteEmpleados([FromBody] AddAreaDto areaDto)
-        //{
-        //    var deleteArea = _mapper.Map<Area>(areaDto);
-        //    //var id = areaDto.Id;
-        //    //var elementoId = await _maderasProveedoresContext.Areas.FirstOrDefaultAsync(d => d.Id == id);
-        //    //var idToDelete = new Area { Id = areaDto.Id };
-        //    _maderasProveedoresContext.Areas.Remove(deleteArea);
-        //    await _maderasProveedoresContext.SaveChangesAsync();
-
-        //    var areas = await _maderasProveedoresContext.Areas.ToListAsync();
-
-        //    return Ok(areas);
-        //}
+            return Ok();
+        }
     }
 }
