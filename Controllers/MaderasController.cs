@@ -10,14 +10,11 @@ namespace MaderasProveedores.API.Controllers
 {
     public class MaderasController : Controller
     {
-        
-        private readonly IMapper _mapper;
         private readonly IMaderasService _maderasService;
 
-        public MaderasController(IMaderasService maderasService, IMapper mapper)
+        public MaderasController(IMaderasService maderasService)
         {
             _maderasService = maderasService;
-            _mapper = mapper;
         }
 
         [HttpGet("getAllMaderas")]

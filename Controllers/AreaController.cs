@@ -10,14 +10,10 @@ namespace MaderasProveedores.API.Controllers
 {
     public class AreaController : Controller
     {
-        //private readonly MaderasProveedoresContext _maderasProveedoresContext;
-        private readonly IMapper _mapper;
         private readonly IAreaService _areaService;
 
-        public AreaController(IMapper mapper, IAreaService areaServices)
+        public AreaController(IAreaService areaServices)
         {
-            //_maderasProveedoresContext = maderasProveedoresContext;
-            _mapper = mapper;
             _areaService = areaServices;
         }
 

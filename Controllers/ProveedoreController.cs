@@ -11,15 +11,11 @@ namespace MaderasProveedores.API.Controllers
 {
     public class ProveedoreController : Controller
     {
-        private readonly MaderasProveedoresContext _maderasProveedoresContext;
-        private readonly IMapper _mapper;
         private readonly IProveedoresService _proveedoresService;
 
-
-        public ProveedoreController(IProveedoresService proveedoresService, IMapper mapper)
+        public ProveedoreController(IProveedoresService proveedoresService)
         {
             _proveedoresService = proveedoresService;
-            _mapper = mapper;
         }
 
         [HttpGet("getAllProveedores")]

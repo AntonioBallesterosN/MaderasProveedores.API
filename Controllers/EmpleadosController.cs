@@ -10,17 +10,10 @@ namespace MaderasProveedores.API.Controllers
 {
     public class EmpleadosController : Controller
     {
-        //Inyeccion de dependecias 
-
-        //private readonly MaderasProveedoresContext _maderasProveedoresContext;
-        private readonly IMapper _mapper;
         private readonly IEmpleadosService _empleadosService;
 
-        public EmpleadosController(IMapper mapper, IEmpleadosService empleadosService)
+        public EmpleadosController(IEmpleadosService empleadosService)
         {
-            // yo soy el constructor 
-            //_maderasProveedoresContext = maderasProveedoresContext;
-            _mapper = mapper;
             _empleadosService = empleadosService;
         }
 
