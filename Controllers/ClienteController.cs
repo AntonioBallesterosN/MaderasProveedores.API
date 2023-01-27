@@ -42,7 +42,7 @@ namespace MaderasProveedores.API.Controllers
         }
 
         [HttpDelete("deleteClientes")]
-        public async Task<IActionResult> Delete([FromBody] int id)
+        public async Task<IActionResult> Delete(int id)
         {
             await _clienteService.Delete(id);
             return Ok();
