@@ -11,17 +11,21 @@ namespace MaderasProveedores.API.Controllers
     public class AreaController : Controller
     {
         private readonly IAreaService _areaService;
+        private readonly IClienteService _clienteService;
 
-        public AreaController(IAreaService areaServices)
+        public AreaController(IAreaService areaServices, IClienteService clienteService)
         {
             _areaService = areaServices;
+            _clienteService = clienteService;
         }
 
         [HttpGet("getAllAreas")]
         public async Task<IActionResult> GetAllAreas()
         {
             var response = await _areaService.GetAll();
-            return Ok(response);
+            var response2 = await _clienteService.GetAll();
+            return Ok(new { response, response2 });
+            
         }
 
         [HttpGet("getByIdAreas")]
